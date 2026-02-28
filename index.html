@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal Center – Overview</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .greeting { font-size: 22px; font-weight: 300; color: var(--gray-900); margin-bottom: 24px; }
+  .greeting strong { font-weight: 600; }
+  .greeting .date-text { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+
+  .fav-customers { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .fav-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 14px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all .15s; text-decoration: none;
+  }
+  .fav-card:hover { border-color: var(--blue); box-shadow: var(--shadow-sm); }
+  .fav-avatar {
+    width: 36px; height: 36px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .fav-name { font-size: 13px; font-weight: 500; color: var(--gray-900); }
+  .fav-meta { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+
+  .proposals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+  .proposal-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 16px; cursor: pointer; transition: all .15s; text-decoration: none;
+    display: block;
+  }
+  .proposal-card:hover { border-color: var(--blue); box-shadow: var(--shadow-sm); }
+  .proposal-card .pc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .proposal-card .pc-name { font-size: 14px; font-weight: 500; color: var(--blue); }
+  .proposal-card .pc-customer { font-size: 12px; color: var(--gray-500); margin-bottom: 6px; }
+  .proposal-card .pc-details { display: flex; gap: 20px; font-size: 12px; color: var(--gray-400); }
+  .proposal-card .pc-detail { display: flex; align-items: center; gap: 4px; }
+
+  .quick-actions { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .quick-action {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 14px 20px; cursor: pointer; transition: all .15s; text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .quick-action:hover { border-color: var(--blue); box-shadow: var(--shadow-sm); }
+  .quick-action .qa-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--blue-light); color: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .quick-action .qa-text { font-size: 13px; font-weight: 500; color: var(--gray-700); }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <span class="nav-grid">⊞</span>
+  <span class="nav-logo">Dynamics 365</span>
+  <span class="nav-sep">|</span>
+  <span class="nav-app">Proposal Center</span>
+  <div class="nav-search">
+    <span>🔍</span>
+    <span>Search proposals, customers...</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-icon">＋</span>
+    <span class="nav-icon">🔔</span>
+    <span class="nav-icon">💬</span>
+    <span class="nav-icon">⚙</span>
+    <span class="nav-icon">❓</span>
+    <div class="nav-avatar">AJ</div>
+  </div>
+</div>
+
+<!-- APP BODY -->
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <div class="sidebar-nav">
+    <div class="sidebar-nav-header">Proposal Center</div>
+    <a class="sidebar-nav-item active" href="index.html">
+      <span class="nav-item-icon">📊</span>
+      <span>Overview</span>
+    </a>
+    <a class="sidebar-nav-item" href="proposals.html">
+      <span class="nav-item-icon">📄</span>
+      <span>Proposals</span>
+    </a>
+    <a class="sidebar-nav-item" href="customers.html">
+      <span class="nav-item-icon">👥</span>
+      <span>Customers</span>
+    </a>
+    <a class="sidebar-nav-item" href="#">
+      <span class="nav-item-icon">🤝</span>
+      <span>Claims</span>
+    </a>
+    <div class="sidebar-nav-divider"></div>
+    <a class="sidebar-nav-item" href="#">
+      <span class="nav-item-icon">💲</span>
+      <span>Pricelist</span>
+    </a>
+    <a class="sidebar-nav-item" href="#">
+      <span class="nav-item-icon">📋</span>
+      <span>Contract Catalogs</span>
+    </a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <div class="content-body fade-in">
+
+      <!-- GREETING -->
+      <div class="greeting">
+        Good morning, <strong>Alex Johnson</strong>
+        <div class="date-text">February 28, 2026 · Microsoft Commercial</div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <a class="quick-action" href="new-proposal.html">
+          <div class="qa-icon">＋</div>
+          <span class="qa-text">New Proposal</span>
+        </a>
+        <a class="quick-action" href="customers.html">
+          <div class="qa-icon">🔍</div>
+          <span class="qa-text">Search Customer</span>
+        </a>
+        <a class="quick-action" href="proposals.html">
+          <div class="qa-icon">📋</div>
+          <span class="qa-text">My Approvals</span>
+        </a>
+      </div>
+
+      <!-- METRICS -->
+      <div class="metric-grid">
+        <a class="metric-card" href="proposals.html" style="text-decoration:none; border-left:3px solid var(--blue);">
+          <div class="metric-value">24</div>
+          <div class="metric-label">Active Proposals</div>
+        </a>
+        <div class="metric-card" style="border-left:3px solid var(--orange);">
+          <div class="metric-value">7</div>
+          <div class="metric-label">Needs My Approval</div>
+        </div>
+        <div class="metric-card" style="border-left:3px solid var(--green);">
+          <div class="metric-value">12</div>
+          <div class="metric-label">Published This Month</div>
+        </div>
+        <div class="metric-card" style="border-left:3px solid var(--red);">
+          <div class="metric-value">3</div>
+          <div class="metric-label">Expiring Soon</div>
+        </div>
+      </div>
+
+      <!-- RECENT PROPOSALS -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Recent Proposals</div>
+          <a class="section-link" href="proposals.html">View all →</a>
+        </div>
+        <div class="proposals-grid">
+          <a class="proposal-card" href="quote-editor.html">
+            <div class="pc-top">
+              <span class="pc-name">Enterprise Azure Migration FY26</span>
+              <span class="badge badge-draft">📄 Draft</span>
+            </div>
+            <div class="pc-customer">Contoso Corporation</div>
+            <div class="pc-details">
+              <span class="pc-detail">📅 Created Feb 20, 2026</span>
+              <span class="pc-detail">⏱ Expires Mar 22, 2026</span>
+            </div>
+          </a>
+          <a class="proposal-card" href="quote-editor.html">
+            <div class="pc-top">
+              <span class="pc-name">M365 E5 Expansion - Phase 2</span>
+              <span class="badge badge-pending">⏳ Pending Approval</span>
+            </div>
+            <div class="pc-customer">Fabrikam Inc.</div>
+            <div class="pc-details">
+              <span class="pc-detail">📅 Created Feb 15, 2026</span>
+              <span class="pc-detail">⏱ Expires Mar 17, 2026</span>
+            </div>
+          </a>
+          <a class="proposal-card" href="quote-editor.html">
+            <div class="pc-top">
+              <span class="pc-name">Azure Reserved Instances - Q1</span>
+              <span class="badge badge-active">✓ Active</span>
+            </div>
+            <div class="pc-customer">Northwind Traders</div>
+            <div class="pc-details">
+              <span class="pc-detail">📅 Created Feb 10, 2026</span>
+              <span class="pc-detail">⏱ Expires Apr 10, 2026</span>
+            </div>
+          </a>
+          <a class="proposal-card" href="review-publish.html">
+            <div class="pc-top">
+              <span class="pc-name">Dynamics 365 CRM Suite</span>
+              <span class="badge badge-published">✓ Published</span>
+            </div>
+            <div class="pc-customer">Adventure Works</div>
+            <div class="pc-details">
+              <span class="pc-detail">📅 Created Jan 28, 2026</span>
+              <span class="pc-detail">✅ Published Feb 14, 2026</span>
+            </div>
+          </a>
+          <a class="proposal-card" href="quote-editor.html">
+            <div class="pc-top">
+              <span class="pc-name">Power Platform Licensing</span>
+              <span class="badge badge-draft">📄 Draft</span>
+            </div>
+            <div class="pc-customer">Woodgrove Bank</div>
+            <div class="pc-details">
+              <span class="pc-detail">📅 Created Feb 24, 2026</span>
+              <span class="pc-detail">⏱ Expires Mar 26, 2026</span>
+            </div>
+          </a>
+          <a class="proposal-card" href="quote-editor.html">
+            <div class="pc-top">
+              <span class="pc-name">Azure MACC Commitment $2M</span>
+              <span class="badge badge-expired">✕ Expired</span>
+            </div>
+            <div class="pc-customer">Tailspin Toys</div>
+            <div class="pc-details">
+              <span class="pc-detail">📅 Created Dec 01, 2025</span>
+              <span class="pc-detail">⚠ Expired Jan 31, 2026</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- FAVORITE CUSTOMERS -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Favorite Customers</div>
+          <a class="section-link" href="customers.html">Browse all →</a>
+        </div>
+        <div class="fav-customers">
+          <a class="fav-card" href="customer.html">
+            <div class="fav-avatar" style="background:linear-gradient(135deg,#0078d4,#40a9ff);">C</div>
+            <div>
+              <div class="fav-name">Contoso Corporation</div>
+              <div class="fav-meta">5 active proposals</div>
+            </div>
+          </a>
+          <a class="fav-card" href="customer.html">
+            <div class="fav-avatar" style="background:linear-gradient(135deg,#5c2d91,#b4a0ff);">F</div>
+            <div>
+              <div class="fav-name">Fabrikam Inc.</div>
+              <div class="fav-meta">3 active proposals</div>
+            </div>
+          </a>
+          <a class="fav-card" href="customer.html">
+            <div class="fav-avatar" style="background:linear-gradient(135deg,#107c10,#6ccb5f);">N</div>
+            <div>
+              <div class="fav-name">Northwind Traders</div>
+              <div class="fav-meta">2 active proposals</div>
+            </div>
+          </a>
+          <a class="fav-card" href="customer.html">
+            <div class="fav-avatar" style="background:linear-gradient(135deg,#ca5010,#f7a93b);">A</div>
+            <div>
+              <div class="fav-name">Adventure Works</div>
+              <div class="fav-meta">1 active proposal</div>
+            </div>
+          </a>
+          <a class="fav-card" href="customer.html">
+            <div class="fav-avatar" style="background:linear-gradient(135deg,#d13438,#ff6767);">W</div>
+            <div>
+              <div class="fav-name">Woodgrove Bank</div>
+              <div class="fav-meta">4 active proposals</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="prototype-watermark">PROTOTYPE — Not Production</div>
+
+</body>
+</html>

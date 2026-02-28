@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal Center – Review & Publish</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { overflow-x: hidden; }
+  .quote-nav {
+    background: #fff; height: 48px; display: flex; align-items: center;
+    padding: 0 16px; gap: 12px; border-bottom: 1px solid var(--gray-200); flex-shrink: 0;
+  }
+  .quote-back { font-size: 18px; color: var(--gray-500); cursor: pointer; text-decoration: none; }
+  .quote-back:hover { color: var(--blue); }
+  .quote-customer { font-size: 13px; color: var(--blue); cursor: pointer; }
+  .quote-customer:hover { text-decoration: underline; }
+  .quote-sep { color: var(--gray-300); font-size: 13px; }
+  .quote-name { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+  .quote-status { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .quote-expiry { font-size: 11px; color: var(--gray-400); }
+  .quote-id { font-size: 11px; color: var(--gray-400); }
+
+  .review-body { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+  .review-section {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+    margin-bottom: 20px; overflow: hidden;
+  }
+  .review-section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
+    cursor: pointer;
+  }
+  .review-section-title { font-size: 14px; font-weight: 600; color: var(--gray-900); display: flex; align-items: center; gap: 8px; }
+  .review-section-status { font-size: 12px; }
+  .review-section-body { padding: 20px; }
+  .review-section-body.collapsed { display: none; }
+
+  .review-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px; }
+  .review-row:last-child { border-bottom: none; }
+  .review-label { color: var(--gray-500); }
+  .review-value { color: var(--gray-700); font-weight: 500; text-align: right; }
+
+  .participant-card {
+    background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 12px;
+  }
+  .participant-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .participant-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+  }
+  .participant-name { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+  .participant-role { font-size: 11px; color: var(--gray-400); }
+
+  .product-summary-row {
+    display: grid; grid-template-columns: 1fr 100px 100px 100px;
+    padding: 10px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px; align-items: center;
+  }
+  .product-summary-row:last-child { border-bottom: none; }
+  .product-summary-header {
+    display: grid; grid-template-columns: 1fr 100px 100px 100px;
+    padding: 8px 0; border-bottom: 1px solid var(--gray-200);
+    font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase;
+  }
+  .product-summary-header span:nth-child(n+2), .product-summary-row span:nth-child(n+2) { text-align: right; }
+
+  .publish-bar {
+    background: #fff; border-top: 1px solid var(--gray-200);
+    padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; bottom: 0;
+  }
+  .publish-checklist { display: flex; align-items: center; gap: 16px; font-size: 12px; }
+  .checklist-item { display: flex; align-items: center; gap: 6px; }
+  .checklist-item.done { color: var(--green); }
+  .checklist-item.pending { color: var(--orange); }
+
+  .steps-sidebar {
+    width: 200px; background: #fff; border-right: 1px solid var(--gray-200);
+    padding: 16px 0; flex-shrink: 0; overflow-y: auto;
+  }
+  .steps-title { padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+  .step-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; font-size: 13px; color: var(--gray-500);
+    cursor: pointer; transition: background .12s;
+  }
+  .step-item:hover { background: var(--gray-50); }
+  .step-item.active { color: var(--blue); font-weight: 600; }
+  .step-item.done { color: var(--green); }
+  .step-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid var(--gray-300); display: flex; align-items: center;
+    justify-content: center; font-size: 10px; flex-shrink: 0;
+  }
+  .step-item.active .step-dot { border-color: var(--blue); background: var(--blue); color: #fff; }
+  .step-item.done .step-dot { border-color: var(--green); background: var(--green); color: #fff; }
+  .step-connector { width: 2px; height: 16px; background: var(--gray-200); margin-left: 25px; }
+  .step-connector.done { background: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- QUOTE NAV BAR -->
+<div class="quote-nav">
+  <a class="quote-back" href="proposals.html" title="Back to proposals">←</a>
+  <a class="quote-customer" href="customer.html">Contoso Corporation</a>
+  <span class="quote-sep">›</span>
+  <span class="quote-name">Enterprise Azure Migration FY26</span>
+  <div class="quote-status">
+    <span class="quote-id">QC-2026-001847</span>
+    <span class="quote-expiry">⏱ Expires Mar 22, 2026</span>
+    <span class="badge badge-active">✓ Active</span>
+  </div>
+</div>
+
+<!-- COMMAND BAR -->
+<div class="command-bar">
+  <button class="cmd-btn primary" onclick="publishProposal()">📤 Publish Proposal</button>
+  <div class="cmd-sep"></div>
+  <button class="cmd-btn" onclick="window.location='quote-editor.html'">📦 Products</button>
+  <button class="cmd-btn" onclick="window.location='quote-terms.html'">📋 Terms</button>
+  <div class="cmd-sep"></div>
+  <button class="cmd-btn" onclick="alert('Download as PDF')">⬇ Download PDF</button>
+  <button class="cmd-btn" onclick="alert('Send preview to customer')">📧 Send Preview</button>
+  <div style="flex:1"></div>
+  <span style="font-size:12px;color:var(--gray-400);">All sections reviewed ✓</span>
+</div>
+
+<div style="display:flex; height:calc(100vh - 96px); overflow:hidden;">
+  <!-- PROPOSAL STEPS -->
+  <div class="steps-sidebar">
+    <div class="steps-title">Proposal Steps</div>
+    <div class="step-item done"><div class="step-dot">✓</div><span>Customer</span></div>
+    <div class="step-connector done"></div>
+    <div class="step-item done"><div class="step-dot">✓</div><span>Products</span></div>
+    <div class="step-connector done"></div>
+    <div class="step-item done"><div class="step-dot">✓</div><span>Agreement</span></div>
+    <div class="step-connector done"></div>
+    <div class="step-item done"><div class="step-dot">✓</div><span>Approvals</span></div>
+    <div class="step-connector done"></div>
+    <div class="step-item active"><div class="step-dot">5</div><span>Publish</span></div>
+  </div>
+
+  <div style="flex:1; overflow-y:auto;">
+    <div class="review-body fade-in">
+
+      <!-- INFO BANNER -->
+      <div class="info-banner success">
+        <span class="banner-icon">✅</span>
+        <span>This proposal has been approved and is ready to publish. Review the summary below, verify participant details, and click <strong>Publish Proposal</strong> when ready.</span>
+      </div>
+
+      <!-- PROPOSAL SUMMARY -->
+      <div class="review-section">
+        <div class="review-section-header" onclick="toggleSection(this)">
+          <span class="review-section-title">📄 Proposal Summary</span>
+          <span class="review-section-status" style="color:var(--green);">✓ Complete</span>
+        </div>
+        <div class="review-section-body">
+          <div class="review-row"><span class="review-label">Proposal Name</span><span class="review-value">Enterprise Azure Migration FY26</span></div>
+          <div class="review-row"><span class="review-label">Customer</span><span class="review-value" style="color:var(--blue);">Contoso Corporation</span></div>
+          <div class="review-row"><span class="review-label">Proposal ID</span><span class="review-value">QC-2026-001847</span></div>
+          <div class="review-row"><span class="review-label">Channel</span><span class="review-value">Direct</span></div>
+          <div class="review-row"><span class="review-label">Market</span><span class="review-value">United States</span></div>
+          <div class="review-row"><span class="review-label">Cloud</span><span class="review-value">Global</span></div>
+          <div class="review-row"><span class="review-label">Currency</span><span class="review-value">USD ($)</span></div>
+          <div class="review-row"><span class="review-label">Language</span><span class="review-value">English</span></div>
+          <div class="review-row"><span class="review-label">Created</span><span class="review-value">Jun 15, 2025</span></div>
+          <div class="review-row"><span class="review-label">Good Until</span><span class="review-value">Mar 22, 2026</span></div>
+          <div class="review-row"><span class="review-label">CRM Opportunity</span><span class="review-value">OPP-2025-48291</span></div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS SUMMARY -->
+      <div class="review-section">
+        <div class="review-section-header" onclick="toggleSection(this)">
+          <span class="review-section-title">📦 Products & Pricing <span style="font-size:12px;color:var(--gray-400);font-weight:400;">(3 line items)</span></span>
+          <span class="review-section-status" style="color:var(--green);">✓ Complete</span>
+        </div>
+        <div class="review-section-body">
+          <div class="product-summary-header">
+            <span>Product</span>
+            <span>Quantity</span>
+            <span>Discount</span>
+            <span>Total</span>
+          </div>
+          <div class="product-summary-row">
+            <span><strong>Microsoft 365 E5</strong><br><span style="font-size:11px;color:var(--gray-400);">M365-E5-001 · Annual</span></span>
+            <span>500</span>
+            <span style="color:var(--green);">10%</span>
+            <span><strong>$307,800.00</strong></span>
+          </div>
+          <div class="product-summary-row">
+            <span><strong>Azure Plan</strong><br><span style="font-size:11px;color:var(--gray-400);">AZR-PLN-001 · Pay-as-you-go</span></span>
+            <span>1</span>
+            <span>—</span>
+            <span><strong>Consumption</strong></span>
+          </div>
+          <div class="product-summary-row">
+            <span><strong>Azure Reserved VM Instances</strong><br><span style="font-size:11px;color:var(--gray-400);">AZR-RVI-001 · 1-year term</span></span>
+            <span>10</span>
+            <span style="color:var(--green);">5%</span>
+            <span><strong>$11,400.00</strong></span>
+          </div>
+          <div style="display:flex; justify-content:flex-end; padding:12px 0 0; border-top:1px solid var(--gray-200); margin-top:8px;">
+            <div style="text-align:right;">
+              <div style="font-size:12px; color:var(--gray-400);">Estimated Annual Total</div>
+              <div style="font-size:20px; font-weight:700; color:var(--gray-900);">$319,200.00</div>
+              <div style="font-size:11px; color:var(--gray-400);">+ Azure consumption (variable)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGREEMENT SUMMARY -->
+      <div class="review-section">
+        <div class="review-section-header" onclick="toggleSection(this)">
+          <span class="review-section-title">📋 Agreement Terms <span style="font-size:12px;color:var(--gray-400);font-weight:400;">(4 terms)</span></span>
+          <span class="review-section-status" style="color:var(--green);">✓ Complete</span>
+        </div>
+        <div class="review-section-body">
+          <div class="review-row"><span class="review-label">Microsoft Customer Agreement</span><span class="review-value"><span class="badge badge-published" style="font-size:10px;">Required</span></span></div>
+          <div class="review-row"><span class="review-label">Data Processing Agreement</span><span class="review-value"><span class="badge badge-active" style="font-size:10px;">Standard</span></span></div>
+          <div class="review-row"><span class="review-label">Enterprise SLA</span><span class="review-value"><span class="badge badge-active" style="font-size:10px;">Standard</span></span></div>
+          <div class="review-row"><span class="review-label">Custom Pricing Terms</span><span class="review-value"><span class="badge badge-pending" style="font-size:10px;">Custom</span></span></div>
+          <div style="margin-top:8px;">
+            <a href="quote-terms.html" style="font-size:12px; color:var(--blue); text-decoration:none;">Edit agreement terms →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PARTICIPANTS / SIGNATORIES -->
+      <div class="review-section">
+        <div class="review-section-header" onclick="toggleSection(this)">
+          <span class="review-section-title">👥 Participants & Signatories</span>
+          <span class="review-section-status" style="color:var(--green);">✓ Complete</span>
+        </div>
+        <div class="review-section-body">
+          <div class="participant-card">
+            <div class="participant-header">
+              <div class="participant-avatar">JD</div>
+              <div>
+                <div class="participant-name">Jane Doe</div>
+                <div class="participant-role">Primary Signatory — Contoso Corporation</div>
+              </div>
+              <span class="badge badge-published" style="margin-left:auto; font-size:10px;">Confirmed</span>
+            </div>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">First Name</label>
+                <input class="form-input" type="text" value="Jane" style="width:100%;">
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Last Name</label>
+                <input class="form-input" type="text" value="Doe" style="width:100%;">
+              </div>
+            </div>
+            <div class="form-row" style="margin-top:12px; margin-bottom:0;">
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Email</label>
+                <input class="form-input" type="email" value="jane.doe@contoso.com" style="width:100%;">
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Phone</label>
+                <input class="form-input" type="tel" value="+1 (425) 555-0198" style="width:100%;">
+              </div>
+            </div>
+          </div>
+
+          <div class="participant-card">
+            <div class="participant-header">
+              <div class="participant-avatar" style="background:linear-gradient(135deg, var(--green), #2d9d2d);">RS</div>
+              <div>
+                <div class="participant-name">Robert Smith</div>
+                <div class="participant-role">Additional Signatory — Contoso Corporation</div>
+              </div>
+              <span class="badge badge-pending" style="margin-left:auto; font-size:10px;">Pending</span>
+            </div>
+            <div class="form-row" style="margin-bottom:0;">
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">First Name</label>
+                <input class="form-input" type="text" value="Robert" style="width:100%;">
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Last Name</label>
+                <input class="form-input" type="text" value="Smith" style="width:100%;">
+              </div>
+            </div>
+            <div class="form-row" style="margin-top:12px; margin-bottom:0;">
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Email</label>
+                <input class="form-input" type="email" value="r.smith@contoso.com" style="width:100%;">
+              </div>
+              <div class="form-group" style="flex:1;">
+                <label class="form-label">Phone</label>
+                <input class="form-input" type="tel" value="+1 (425) 555-0234" style="width:100%;">
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-secondary" style="font-size:12px;" onclick="alert('Add signatory form')">＋ Add Signatory</button>
+        </div>
+      </div>
+
+      <!-- TRANSACTION OPTIONS -->
+      <div class="review-section">
+        <div class="review-section-header" onclick="toggleSection(this)">
+          <span class="review-section-title">⚙ Transaction Options</span>
+          <span class="review-section-status" style="color:var(--green);">✓ Complete</span>
+        </div>
+        <div class="review-section-body">
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Billing Frequency</label>
+              <select class="form-select" style="width:100%;">
+                <option selected>Monthly</option>
+                <option>Annual</option>
+                <option>One-time</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Payment Method</label>
+              <select class="form-select" style="width:100%;">
+                <option selected>Invoice</option>
+                <option>Credit Card</option>
+                <option>Wire Transfer</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">PO Number (optional)</label>
+              <input class="form-input" type="text" placeholder="Enter PO number" style="width:100%;">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label class="form-label">Start Date</label>
+              <input class="form-input" type="date" value="2025-07-01" style="width:100%;">
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:4px;">
+            <label class="form-label" style="display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" checked> Auto-renew subscriptions at end of term
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPROVAL HISTORY -->
+      <div class="review-section">
+        <div class="review-section-header" onclick="toggleSection(this)">
+          <span class="review-section-title">✅ Approval History</span>
+          <span class="review-section-status" style="color:var(--green);">Approved</span>
+        </div>
+        <div class="review-section-body">
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; align-items:flex-start; gap:12px; font-size:13px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">AJ</div>
+              <div>
+                <div><strong>Alex Johnson</strong> submitted for approval</div>
+                <div style="font-size:11px;color:var(--gray-400);">Jun 20, 2025 at 2:34 PM</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:flex-start; gap:12px; font-size:13px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">ML</div>
+              <div>
+                <div><strong>Maria Lopez</strong> approved the proposal</div>
+                <div style="font-size:11px;color:var(--gray-400);">Jun 21, 2025 at 9:15 AM</div>
+                <div style="font-size:12px; color:var(--gray-500); margin-top:4px; padding:6px 10px; background:var(--gray-50); border-radius:var(--radius);">
+                  "Pricing looks good. Approved for Contoso. Please ensure DPA is attached before publishing."
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- PUBLISH BAR -->
+<div class="publish-bar">
+  <div class="publish-checklist">
+    <span class="checklist-item done">✓ Products</span>
+    <span class="checklist-item done">✓ Agreement</span>
+    <span class="checklist-item done">✓ Signatories</span>
+    <span class="checklist-item done">✓ Approved</span>
+  </div>
+  <div class="btn-row">
+    <button class="btn-secondary" onclick="alert('Save as draft')">💾 Save Draft</button>
+    <button class="btn-primary" style="font-size:15px; height:38px; padding:0 28px;" onclick="publishProposal()">📤 Publish Proposal</button>
+  </div>
+</div>
+
+<div class="prototype-watermark">PROTOTYPE — Not Production</div>
+
+<script>
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('collapsed');
+}
+
+function publishProposal() {
+  if (confirm('Are you sure you want to publish this proposal to Contoso Corporation?\n\nThis will send the agreement to the customer for acceptance.')) {
+    alert('✅ Proposal published successfully!\n\nProposal QC-2026-001847 has been sent to Contoso Corporation. The customer will receive an email notification with the agreement link.');
+    document.querySelector('.badge').className = 'badge badge-published';
+    document.querySelector('.badge').textContent = '✓ Published';
+  }
+}
+</script>
+</body>
+</html>

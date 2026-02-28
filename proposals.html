@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal Center – My Proposals</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .proposals-header {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #fff; padding: 16px 24px; border-bottom: 1px solid var(--gray-200);
+  }
+  .proposals-header h1 { font-size: 20px; font-weight: 600; color: var(--gray-900); }
+  .filter-chips { display: flex; gap: 6px; padding: 0 24px; background: #fff; padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--gray-200);}
+  .filter-chip {
+    padding: 4px 14px; border-radius: 16px; font-size: 12px;
+    border: 1px solid var(--gray-300); background: #fff;
+    color: var(--gray-700); cursor: pointer; transition: all .15s;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .filter-chip:hover { border-color: var(--blue); color: var(--blue); }
+  .filter-chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .filter-chip .chip-count { font-weight: 600; }
+
+  .table-wrapper { 
+    background: #fff; border: 1px solid var(--gray-200); 
+    border-radius: var(--radius); margin: 0; overflow: hidden;
+  }
+  .proposal-name-cell { display: flex; flex-direction: column; }
+  .proposal-name-link { color: var(--blue); font-weight: 500; font-size: 13px; }
+  .proposal-name-link:hover { text-decoration: underline; }
+  .proposal-id { font-size: 11px; color: var(--gray-400); margin-top: 1px; }
+  .customer-cell { display: flex; align-items: center; gap: 8px; }
+  .customer-cell .mini-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .actions-cell { display: flex; gap: 4px; }
+  .pagination { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 12px; color: var(--gray-500); border-top: 1px solid var(--gray-200); background: #fff; }
+  .pagination-btns { display: flex; gap: 4px; }
+  .pagination-btn { width: 28px; height: 28px; border: 1px solid var(--gray-300); border-radius: 2px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--gray-700); }
+  .pagination-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .pagination-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <span class="nav-grid">⊞</span>
+  <span class="nav-logo">Dynamics 365</span>
+  <span class="nav-sep">|</span>
+  <span class="nav-app">Proposal Center</span>
+  <div class="nav-search"><span>🔍</span><span>Search proposals, customers...</span></div>
+  <div class="nav-right">
+    <span class="nav-icon">＋</span><span class="nav-icon">🔔</span><span class="nav-icon">💬</span><span class="nav-icon">⚙</span><span class="nav-icon">❓</span>
+    <div class="nav-avatar">AJ</div>
+  </div>
+</div>
+
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <div class="sidebar-nav">
+    <div class="sidebar-nav-header">Proposal Center</div>
+    <a class="sidebar-nav-item" href="index.html"><span class="nav-item-icon">📊</span><span>Overview</span></a>
+    <a class="sidebar-nav-item active" href="proposals.html"><span class="nav-item-icon">📄</span><span>Proposals</span></a>
+    <a class="sidebar-nav-item" href="customers.html"><span class="nav-item-icon">👥</span><span>Customers</span></a>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">🤝</span><span>Claims</span></a>
+    <div class="sidebar-nav-divider"></div>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">💲</span><span>Pricelist</span></a>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">📋</span><span>Contract Catalogs</span></a>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <!-- HEADER -->
+    <div class="proposals-header">
+      <h1>Proposals</h1>
+      <a class="btn-primary" href="new-proposal.html" style="text-decoration:none;">＋ New Proposal</a>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <div class="tab active">My Proposals</div>
+      <div class="tab" onclick="alert('Needs My Approval tab - prototype interaction')">Needs My Approval <span style="background:var(--red);color:#fff;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px;">7</span></div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filter-chips">
+      <div class="filter-chip active"><span class="chip-count">All</span> (24)</div>
+      <div class="filter-chip" onclick="filterProposals(this,'draft')">📄 Draft (8)</div>
+      <div class="filter-chip" onclick="filterProposals(this,'pending')">⏳ Pending (5)</div>
+      <div class="filter-chip" onclick="filterProposals(this,'active')">✓ Active (4)</div>
+      <div class="filter-chip" onclick="filterProposals(this,'published')">✅ Published (4)</div>
+      <div class="filter-chip" onclick="filterProposals(this,'expired')">✕ Expired (3)</div>
+    </div>
+
+    <div class="content-body fade-in">
+      <!-- TOOLBAR -->
+      <div class="toolbar" style="margin-bottom:12px;">
+        <div class="toolbar-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search by name, customer, or ID..." id="search-input" oninput="searchProposals(this.value)">
+        </div>
+        <div class="toolbar-btn">📅 Created Date ▾</div>
+        <div class="toolbar-btn">🏷 Market ▾</div>
+        <div class="toolbar-btn">☁ Cloud ▾</div>
+        <div style="flex:1"></div>
+        <div class="toolbar-btn">↕ Sort ▾</div>
+        <div class="toolbar-btn" title="Grid view">⊞</div>
+        <div class="toolbar-btn" title="List view">☰</div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrapper">
+        <table class="data-table" id="proposals-table">
+          <thead>
+            <tr>
+              <th style="width:30px;"><input type="checkbox"></th>
+              <th>Proposal Name</th>
+              <th>Customer</th>
+              <th>Status</th>
+              <th>Market</th>
+              <th>Created</th>
+              <th>Good Until</th>
+              <th>Cloud</th>
+              <th style="width:80px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="proposals-body">
+            <tr onclick="window.location='quote-editor.html'" data-status="draft">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Enterprise Azure Migration FY26</a><span class="proposal-id">QC-2026-001847</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#0078d4;">C</div>Contoso Corporation</div></td>
+              <td><span class="badge badge-draft">📄 Draft</span></td>
+              <td>United States</td>
+              <td>Feb 20, 2026</td>
+              <td>Mar 22, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="Edit" onclick="event.stopPropagation();window.location='quote-editor.html'">✏</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="pending">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">M365 E5 Expansion - Phase 2</a><span class="proposal-id">QC-2026-001832</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#5c2d91;">F</div>Fabrikam Inc.</div></td>
+              <td><span class="badge badge-pending">⏳ Pending Approval</span></td>
+              <td>United States</td>
+              <td>Feb 15, 2026</td>
+              <td>Mar 17, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="View">👁</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="active">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Azure Reserved Instances - Q1</a><span class="proposal-id">QC-2026-001820</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#107c10;">N</div>Northwind Traders</div></td>
+              <td><span class="badge badge-active">✓ Active</span></td>
+              <td>Germany</td>
+              <td>Feb 10, 2026</td>
+              <td>Apr 10, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="Edit" onclick="event.stopPropagation();window.location='quote-editor.html'">✏</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='review-publish.html'" data-status="published">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="review-publish.html">Dynamics 365 CRM Suite</a><span class="proposal-id">QC-2026-001798</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#ca5010;">A</div>Adventure Works</div></td>
+              <td><span class="badge badge-published">✅ Published</span></td>
+              <td>United Kingdom</td>
+              <td>Jan 28, 2026</td>
+              <td>Feb 28, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="View">👁</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="draft">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Power Platform Licensing</a><span class="proposal-id">QC-2026-001855</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#d13438;">W</div>Woodgrove Bank</div></td>
+              <td><span class="badge badge-draft">📄 Draft</span></td>
+              <td>United States</td>
+              <td>Feb 24, 2026</td>
+              <td>Mar 26, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="Edit" onclick="event.stopPropagation();window.location='quote-editor.html'">✏</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="expired">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Azure MACC Commitment $2M</a><span class="proposal-id">QC-2025-001650</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#ca5010;">T</div>Tailspin Toys</div></td>
+              <td><span class="badge badge-expired">✕ Expired</span></td>
+              <td>United States</td>
+              <td>Dec 01, 2025</td>
+              <td>Jan 31, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="Extend">📅</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="draft">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Windows 365 Cloud PC Pilot</a><span class="proposal-id">QC-2026-001860</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#0078d4;">C</div>Contoso Corporation</div></td>
+              <td><span class="badge badge-draft">📄 Draft</span></td>
+              <td>Japan</td>
+              <td>Feb 26, 2026</td>
+              <td>Mar 28, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="Edit" onclick="event.stopPropagation();window.location='quote-editor.html'">✏</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="pending">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Azure Savings Plan - 3 Year</a><span class="proposal-id">QC-2026-001845</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#5c2d91;">F</div>Fabrikam Inc.</div></td>
+              <td><span class="badge badge-pending">⏳ Pending Approval</span></td>
+              <td>France</td>
+              <td>Feb 18, 2026</td>
+              <td>Mar 20, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="View">👁</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="active">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Security & Compliance Bundle</a><span class="proposal-id">QC-2026-001810</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#107c10;">N</div>Northwind Traders</div></td>
+              <td><span class="badge badge-active">✓ Active</span></td>
+              <td>Germany</td>
+              <td>Feb 05, 2026</td>
+              <td>May 05, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="Edit" onclick="event.stopPropagation();window.location='quote-editor.html'">✏</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+            <tr onclick="window.location='quote-editor.html'" data-status="expired">
+              <td><input type="checkbox" onclick="event.stopPropagation()"></td>
+              <td><div class="proposal-name-cell"><a class="proposal-name-link" href="quote-editor.html">Azure DevOps Licenses</a><span class="proposal-id">QC-2025-001580</span></div></td>
+              <td><div class="customer-cell"><div class="mini-avatar" style="background:#d13438;">W</div>Woodgrove Bank</div></td>
+              <td><span class="badge badge-expired">✕ Expired</span></td>
+              <td>United States</td>
+              <td>Nov 15, 2025</td>
+              <td>Jan 15, 2026</td>
+              <td>Global</td>
+              <td><div class="actions-cell"><button class="btn-icon" title="Extend">📅</button><button class="btn-icon" title="More">⋯</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <span>Showing 1 – 10 of 24 proposals</span>
+          <div class="pagination-btns">
+            <button class="pagination-btn">‹</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="prototype-watermark">PROTOTYPE — Not Production</div>
+
+<script>
+function filterProposals(chip, status) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  document.querySelectorAll('#proposals-body tr').forEach(row => {
+    if (!status || row.dataset.status === status) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+function searchProposals(term) {
+  const lower = term.toLowerCase();
+  document.querySelectorAll('#proposals-body tr').forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(lower) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

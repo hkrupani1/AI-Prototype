@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal Center – Customer 360</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .customer-tabs {
+    display: flex; gap: 0; border-bottom: 1px solid var(--gray-200); background: #fff; padding: 0 24px;
+  }
+  .customer-tab {
+    padding: 12px 16px; font-size: 13px; cursor: pointer; color: var(--gray-500);
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all .15s; white-space: nowrap;
+  }
+  .customer-tab:hover { color: var(--gray-700); }
+  .customer-tab.active { color: var(--blue); font-weight: 600; border-bottom-color: var(--blue); }
+  .customer-tab .tab-count {
+    background: var(--gray-200); color: var(--gray-500); padding: 1px 6px;
+    border-radius: 8px; font-size: 10px; font-weight: 600; margin-left: 4px;
+  }
+  .customer-tab.active .tab-count { background: var(--blue-light); color: var(--blue); }
+
+  .customer-content { padding: 24px; overflow-y: auto; }
+
+  /* Overview cards */
+  .overview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .overview-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 16px 20px;
+  }
+  .overview-card .oc-label { font-size: 12px; color: var(--gray-500); margin-bottom: 4px; }
+  .overview-card .oc-value { font-size: 22px; font-weight: 700; color: var(--gray-900); }
+  .overview-card .oc-change { font-size: 11px; margin-top: 2px; }
+  .overview-card .oc-change.up { color: var(--green); }
+  .overview-card .oc-change.down { color: var(--red); }
+
+  /* Concession cards */
+  .concession-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 12px;
+  }
+  .concession-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .concession-title { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+  .concession-type {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 2px 8px; border-radius: 2px;
+  }
+  .concession-type.macc { background: var(--blue-light); color: var(--blue); }
+  .concession-type.caco { background: var(--purple); background: #f3e8ff; color: var(--purple); }
+  .concession-bar {
+    height: 8px; background: var(--gray-200); border-radius: 4px; margin: 8px 0; overflow: hidden;
+  }
+  .concession-fill { height: 100%; border-radius: 4px; transition: width .5s; }
+  .concession-fill.blue { background: var(--blue); }
+  .concession-fill.purple { background: var(--purple); }
+  .concession-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-500); }
+
+  /* Subscription table */
+  .sub-status { display: inline-flex; align-items: center; gap: 4px; }
+  .sub-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .sub-dot.active { background: var(--green); }
+  .sub-dot.suspended { background: var(--orange); }
+  .sub-dot.expired { background: var(--red); }
+
+  /* About section */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .about-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 16px;
+  }
+  .about-card h4 { font-size: 13px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <span class="nav-grid">⠿⠿</span>
+  <span class="nav-logo">Dynamics 365</span>
+  <span class="nav-sep">|</span>
+  <span class="nav-app">Proposal Center</span>
+  <div class="nav-search">🔍 Search proposals, customers, products...</div>
+  <div class="nav-right">
+    <span class="nav-icon">❓</span>
+    <span class="nav-icon">⚙</span>
+    <span class="nav-icon">🔔</span>
+    <div class="nav-avatar">AJ</div>
+  </div>
+</div>
+
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <div class="sidebar-nav">
+    <div class="sidebar-nav-header">Proposal Center</div>
+    <a class="sidebar-nav-item" href="index.html"><span class="nav-item-icon">🏠</span><span>Overview</span></a>
+    <a class="sidebar-nav-item" href="proposals.html"><span class="nav-item-icon">📄</span><span>Proposals</span></a>
+    <a class="sidebar-nav-item active" href="customers.html"><span class="nav-item-icon">👥</span><span>Customers</span></a>
+    <div class="sidebar-nav-divider"></div>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">📊</span><span>Analytics</span></a>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">⚙</span><span>Settings</span></a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" style="overflow:hidden; display:flex; flex-direction:column;">
+
+    <!-- CUSTOMER HEADER -->
+    <div class="customer-header">
+      <div class="customer-avatar">C</div>
+      <div class="customer-info" style="flex:1;">
+        <h2>Contoso Corporation</h2>
+        <div class="customer-meta">
+          <span>🏢 Tenant: contoso.onmicrosoft.com</span>
+          <span>🆔 TPID: 1234567</span>
+          <span>🌍 United States</span>
+          <span>💼 Enterprise</span>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="window.location='new-proposal.html'">＋ New Proposal</button>
+        <button class="btn-secondary" onclick="alert('Edit customer details')">✏ Edit</button>
+      </div>
+    </div>
+
+    <!-- CUSTOMER TABS -->
+    <div class="customer-tabs" id="customer-tabs">
+      <div class="customer-tab active" onclick="showTab('overview')">Overview</div>
+      <div class="customer-tab" onclick="showTab('agreements')">Agreements <span class="tab-count">3</span></div>
+      <div class="customer-tab" onclick="showTab('concessions')">Concessions <span class="tab-count">2</span></div>
+      <div class="customer-tab" onclick="showTab('subscriptions')">Subscriptions <span class="tab-count">8</span></div>
+      <div class="customer-tab" onclick="showTab('billing')">Billing Accounts</div>
+      <div class="customer-tab" onclick="showTab('history')">History</div>
+      <div class="customer-tab" onclick="showTab('about')">About</div>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div style="flex:1; overflow-y:auto;">
+
+      <!-- OVERVIEW TAB -->
+      <div class="customer-content tab-content" id="tab-overview">
+        <div class="overview-grid">
+          <div class="overview-card">
+            <div class="oc-label">Active Proposals</div>
+            <div class="oc-value">5</div>
+            <div class="oc-change up">↑ 2 new this month</div>
+          </div>
+          <div class="overview-card">
+            <div class="oc-label">Active Subscriptions</div>
+            <div class="oc-value">8</div>
+            <div class="oc-change up">↑ 1 added</div>
+          </div>
+          <div class="overview-card">
+            <div class="oc-label">Annual Revenue</div>
+            <div class="oc-value">$1.2M</div>
+            <div class="oc-change up">↑ 15% YoY</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Recent Proposals</span>
+            <a class="section-link" href="proposals.html">View all →</a>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Status</th><th>Created</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr onclick="window.location='quote-editor.html'"><td class="link-cell">Enterprise Azure Migration FY26</td><td><span class="badge badge-draft">Draft</span></td><td>Jun 15, 2025</td><td>$319,200</td></tr>
+              <tr onclick="window.location='review-publish.html'"><td class="link-cell">M365 E5 Renewal</td><td><span class="badge badge-active">Active</span></td><td>May 28, 2025</td><td>$342,000</td></tr>
+              <tr><td class="link-cell">Azure DevOps Expansion</td><td><span class="badge badge-published">Published</span></td><td>Apr 10, 2025</td><td>$56,400</td></tr>
+              <tr><td class="link-cell">Security Suite FY25</td><td><span class="badge badge-expired">Expired</span></td><td>Dec 1, 2024</td><td>$89,100</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Active Concessions</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="concession-card">
+              <div class="concession-header">
+                <span class="concession-title">Azure MACC</span>
+                <span class="concession-type macc">MACC</span>
+              </div>
+              <div class="concession-bar"><div class="concession-fill blue" style="width:65%;"></div></div>
+              <div class="concession-meta"><span>$650K of $1M consumed</span><span>Expires: Dec 2025</span></div>
+            </div>
+            <div class="concession-card">
+              <div class="concession-header">
+                <span class="concession-title">Conditional ACO</span>
+                <span class="concession-type caco">CACO</span>
+              </div>
+              <div class="concession-bar"><div class="concession-fill purple" style="width:40%;"></div></div>
+              <div class="concession-meta"><span>$200K of $500K utilized</span><span>Expires: Mar 2026</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGREEMENTS TAB -->
+      <div class="customer-content tab-content" id="tab-agreements" style="display:none;">
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Customer Agreements</span>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Agreement</th><th>Type</th><th>Status</th><th>Effective</th><th>Expires</th></tr></thead>
+            <tbody>
+              <tr><td class="link-cell">Microsoft Customer Agreement</td><td>MCA</td><td><span class="badge badge-published">Active</span></td><td>Jan 1, 2024</td><td>Dec 31, 2026</td></tr>
+              <tr><td class="link-cell">Enterprise Agreement #EA-445521</td><td>EA</td><td><span class="badge badge-published">Active</span></td><td>Jul 1, 2023</td><td>Jun 30, 2026</td></tr>
+              <tr><td class="link-cell">Legacy MPSA Agreement</td><td>MPSA</td><td><span class="badge badge-expired">Expired</span></td><td>Mar 1, 2020</td><td>Feb 28, 2023</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CONCESSIONS TAB -->
+      <div class="customer-content tab-content" id="tab-concessions" style="display:none;">
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Active Concessions</span>
+            <button class="btn-secondary" style="font-size:12px; height:28px;" onclick="alert('Request new concession')">＋ Request Concession</button>
+          </div>
+          <div class="concession-card">
+            <div class="concession-header">
+              <span class="concession-title">Microsoft Azure Consumption Commitment (MACC)</span>
+              <span class="concession-type macc">MACC</span>
+            </div>
+            <div style="font-size:12px; color:var(--gray-500); margin-bottom:8px;">Commitment: $1,000,000 over 36 months · Started: Jan 2024</div>
+            <div class="concession-bar"><div class="concession-fill blue" style="width:65%;"></div></div>
+            <div class="concession-meta"><span>$650,000 consumed (65%)</span><span>$350,000 remaining</span><span>Expires: Dec 2026</span></div>
+            <div style="margin-top:12px;">
+              <table class="data-table" style="font-size:12px;">
+                <thead><tr><th>Period</th><th>Consumption</th><th>Cumulative</th></tr></thead>
+                <tbody>
+                  <tr><td>Q1 2025</td><td>$95,000</td><td>$550,000</td></tr>
+                  <tr><td>Q2 2025</td><td>$100,000</td><td>$650,000</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="concession-card">
+            <div class="concession-header">
+              <span class="concession-title">Conditional Azure Committed Offer (CACO)</span>
+              <span class="concession-type caco">CACO</span>
+            </div>
+            <div style="font-size:12px; color:var(--gray-500); margin-bottom:8px;">Discount Benefits: Up to $500,000 · Tier: Gold</div>
+            <div class="concession-bar"><div class="concession-fill purple" style="width:40%;"></div></div>
+            <div class="concession-meta"><span>$200,000 utilized (40%)</span><span>$300,000 available</span><span>Expires: Mar 2026</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBSCRIPTIONS TAB -->
+      <div class="customer-content tab-content" id="tab-subscriptions" style="display:none;">
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Active Subscriptions</span>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Subscription</th><th>Product</th><th>Status</th><th>Quantity</th><th>Renewal</th><th>Monthly</th></tr></thead>
+            <tbody>
+              <tr><td class="link-cell">SUB-001-M365E5</td><td>Microsoft 365 E5</td><td><span class="sub-status"><span class="sub-dot active"></span>Active</span></td><td>500</td><td>Jul 1, 2026</td><td>$28,500</td></tr>
+              <tr><td class="link-cell">SUB-002-AZR</td><td>Azure Plan</td><td><span class="sub-status"><span class="sub-dot active"></span>Active</span></td><td>1</td><td>Ongoing</td><td>~$45,000</td></tr>
+              <tr><td class="link-cell">SUB-003-D365SE</td><td>Dynamics 365 Sales Enterprise</td><td><span class="sub-status"><span class="sub-dot active"></span>Active</span></td><td>120</td><td>Jul 1, 2026</td><td>$11,400</td></tr>
+              <tr><td class="link-cell">SUB-004-PBI</td><td>Power BI Pro</td><td><span class="sub-status"><span class="sub-dot active"></span>Active</span></td><td>200</td><td>Jul 1, 2026</td><td>$2,000</td></tr>
+              <tr><td class="link-cell">SUB-005-MDE</td><td>Defender for Endpoint P2</td><td><span class="sub-status"><span class="sub-dot active"></span>Active</span></td><td>500</td><td>Jul 1, 2026</td><td>$2,600</td></tr>
+              <tr><td class="link-cell">SUB-006-EMS</td><td>EMS E5</td><td><span class="sub-status"><span class="sub-dot suspended"></span>Suspended</span></td><td>50</td><td>—</td><td>$650</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BILLING TAB -->
+      <div class="customer-content tab-content" id="tab-billing" style="display:none;">
+        <div class="section">
+          <div class="section-header">
+            <span class="section-title">Billing Accounts</span>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Billing Account</th><th>Type</th><th>Currency</th><th>Payment</th><th>Balance</th></tr></thead>
+            <tbody>
+              <tr><td class="link-cell">BA-11223344 (Primary)</td><td>MCA</td><td>USD</td><td>Invoice — Net 30</td><td>$0.00</td></tr>
+              <tr><td class="link-cell">BA-55667788 (Azure)</td><td>MCA</td><td>USD</td><td>Invoice — Net 60</td><td>$12,450.00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- HISTORY TAB -->
+      <div class="customer-content tab-content" id="tab-history" style="display:none;">
+        <div class="section">
+          <div class="section-header"><span class="section-title">Activity History</span></div>
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div style="display:flex; align-items:flex-start; gap:12px; font-size:13px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--blue);margin-top:6px;flex-shrink:0;"></div>
+              <div><strong>Proposal submitted</strong> — Enterprise Azure Migration FY26<br><span style="font-size:11px;color:var(--gray-400);">Jun 20, 2025 by Alex Johnson</span></div>
+            </div>
+            <div style="display:flex; align-items:flex-start; gap:12px; font-size:13px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:6px;flex-shrink:0;"></div>
+              <div><strong>Proposal published</strong> — M365 E5 Renewal<br><span style="font-size:11px;color:var(--gray-400);">May 30, 2025 by Alex Johnson</span></div>
+            </div>
+            <div style="display:flex; align-items:flex-start; gap:12px; font-size:13px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:6px;flex-shrink:0;"></div>
+              <div><strong>Agreement signed</strong> — Microsoft Customer Agreement<br><span style="font-size:11px;color:var(--gray-400);">Jan 15, 2024 by Jane Doe (Contoso)</span></div>
+            </div>
+            <div style="display:flex; align-items:flex-start; gap:12px; font-size:13px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--orange);margin-top:6px;flex-shrink:0;"></div>
+              <div><strong>MACC activated</strong> — $1M Azure commitment<br><span style="font-size:11px;color:var(--gray-400);">Jan 1, 2024</span></div>
+            </div>
+            <div style="display:flex; align-items:flex-start; gap:12px; font-size:13px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--gray-300);margin-top:6px;flex-shrink:0;"></div>
+              <div><strong>Customer onboarded</strong> — Contoso Corporation<br><span style="font-size:11px;color:var(--gray-400);">Nov 12, 2020</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABOUT TAB -->
+      <div class="customer-content tab-content" id="tab-about" style="display:none;">
+        <div class="about-grid">
+          <div class="about-card">
+            <h4>Organization Details</h4>
+            <div class="review-row"><span class="review-label">Legal Name</span><span class="review-value">Contoso Corporation Inc.</span></div>
+            <div class="review-row"><span class="review-label">Tenant Domain</span><span class="review-value">contoso.onmicrosoft.com</span></div>
+            <div class="review-row"><span class="review-label">TPID</span><span class="review-value">1234567</span></div>
+            <div class="review-row"><span class="review-label">Industry</span><span class="review-value">Financial Services</span></div>
+            <div class="review-row"><span class="review-label">Segment</span><span class="review-value">Enterprise</span></div>
+            <div class="review-row"><span class="review-label">Size</span><span class="review-value">5,000–10,000 employees</span></div>
+          </div>
+          <div class="about-card">
+            <h4>Contact</h4>
+            <div class="review-row"><span class="review-label">Address</span><span class="review-value">1 Microsoft Way, Redmond, WA 98052</span></div>
+            <div class="review-row"><span class="review-label">Country</span><span class="review-value">United States</span></div>
+            <div class="review-row"><span class="review-label">Primary Contact</span><span class="review-value">Jane Doe</span></div>
+            <div class="review-row"><span class="review-label">Email</span><span class="review-value">jane.doe@contoso.com</span></div>
+            <div class="review-row"><span class="review-label">Phone</span><span class="review-value">+1 (425) 555-0198</span></div>
+          </div>
+          <div class="about-card">
+            <h4>Account Team</h4>
+            <div class="review-row"><span class="review-label">Account Executive</span><span class="review-value">Alex Johnson</span></div>
+            <div class="review-row"><span class="review-label">Technical AM</span><span class="review-value">Maria Lopez</span></div>
+            <div class="review-row"><span class="review-label">CSM</span><span class="review-value">David Chen</span></div>
+          </div>
+          <div class="about-card">
+            <h4>Microsoft Relationship</h4>
+            <div class="review-row"><span class="review-label">Customer Since</span><span class="review-value">2020</span></div>
+            <div class="review-row"><span class="review-label">Agreement Type</span><span class="review-value">MCA + EA</span></div>
+            <div class="review-row"><span class="review-label">Partner</span><span class="review-value">Direct (no CSP)</span></div>
+            <div class="review-row"><span class="review-label">Support Plan</span><span class="review-value">Unified Premier</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="prototype-watermark">PROTOTYPE — Not Production</div>
+
+<script>
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.customer-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tabId).style.display = '';
+  // Find and activate the clicked tab
+  const tabs = document.querySelectorAll('.customer-tab');
+  const tabMap = ['overview','agreements','concessions','subscriptions','billing','history','about'];
+  const idx = tabMap.indexOf(tabId);
+  if (idx >= 0) tabs[idx].classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal Center – Customer Search</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .search-hero {
+    background: linear-gradient(135deg, #f0f6ff 0%, #e8f0fe 100%);
+    padding: 32px 24px 28px; border-bottom: 1px solid var(--gray-200);
+  }
+  .search-hero h2 { font-size: 20px; font-weight: 600; color: var(--gray-900); margin-bottom: 4px; }
+  .search-hero p { font-size: 13px; color: var(--gray-500); margin-bottom: 16px; }
+  .search-box {
+    display: flex; gap: 8px; align-items: center; max-width: 600px;
+  }
+  .search-box input {
+    flex: 1; height: 40px; padding: 0 14px; border: 1px solid var(--gray-300);
+    border-radius: var(--radius); font-family: var(--font); font-size: 14px;
+    outline: none; background: #fff;
+  }
+  .search-box input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(0,120,212,0.15); }
+  .search-filters {
+    display: flex; gap: 10px; margin-top: 10px; font-size: 12px;
+  }
+  .search-filter-chip {
+    padding: 4px 12px; border: 1px solid var(--gray-300); border-radius: 20px;
+    background: #fff; color: var(--gray-500); cursor: pointer; transition: all .15s;
+  }
+  .search-filter-chip:hover, .search-filter-chip.active { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+  .customer-result {
+    display: flex; align-items: center; gap: 16px; padding: 16px 24px;
+    border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background .12s;
+  }
+  .customer-result:hover { background: var(--gray-50); }
+  .customer-result .cr-avatar {
+    width: 40px; height: 40px; border-radius: 4px;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .customer-result .cr-info { flex: 1; min-width: 0; }
+  .customer-result .cr-name { font-size: 14px; font-weight: 600; color: var(--blue); }
+  .customer-result .cr-meta { font-size: 12px; color: var(--gray-500); margin-top: 2px; display: flex; gap: 16px; }
+  .customer-result .cr-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .customer-result .cr-stats { display: flex; gap: 20px; flex-shrink: 0; text-align: center; }
+  .customer-result .cr-stat-value { font-size: 16px; font-weight: 700; color: var(--gray-900); }
+  .customer-result .cr-stat-label { font-size: 10px; color: var(--gray-400); text-transform: uppercase; }
+
+  .results-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 24px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
+    font-size: 13px; color: var(--gray-500);
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <span class="nav-grid">⠿⠿</span>
+  <span class="nav-logo">Dynamics 365</span>
+  <span class="nav-sep">|</span>
+  <span class="nav-app">Proposal Center</span>
+  <div class="nav-search">🔍 Search proposals, customers, products...</div>
+  <div class="nav-right">
+    <span class="nav-icon">❓</span>
+    <span class="nav-icon">⚙</span>
+    <span class="nav-icon">🔔</span>
+    <div class="nav-avatar">AJ</div>
+  </div>
+</div>
+
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <div class="sidebar-nav">
+    <div class="sidebar-nav-header">Proposal Center</div>
+    <a class="sidebar-nav-item" href="index.html"><span class="nav-item-icon">🏠</span><span>Overview</span></a>
+    <a class="sidebar-nav-item" href="proposals.html"><span class="nav-item-icon">📄</span><span>Proposals</span></a>
+    <a class="sidebar-nav-item active" href="customers.html"><span class="nav-item-icon">👥</span><span>Customers</span></a>
+    <div class="sidebar-nav-divider"></div>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">📊</span><span>Analytics</span></a>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">⚙</span><span>Settings</span></a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- SEARCH HERO -->
+    <div class="search-hero">
+      <h2>Customers</h2>
+      <p>Search for customers by tenant domain, enrollment ID, PCN, or organization name</p>
+      <div class="search-box">
+        <input type="text" id="customer-search" placeholder="Search customers..." value="Contoso" oninput="filterCustomers(this.value)">
+        <button class="btn-primary" onclick="filterCustomers(document.getElementById('customer-search').value)">🔍 Search</button>
+      </div>
+      <div class="search-filters">
+        <span class="search-filter-chip active">All Customers</span>
+        <span class="search-filter-chip" onclick="this.classList.toggle('active')">Enterprise</span>
+        <span class="search-filter-chip" onclick="this.classList.toggle('active')">SMB</span>
+        <span class="search-filter-chip" onclick="this.classList.toggle('active')">Government</span>
+        <span class="search-filter-chip" onclick="this.classList.toggle('active')">Education</span>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-header">
+      <span id="results-count">Showing 5 customers matching "Contoso"</span>
+      <div class="btn-row">
+        <button class="toolbar-btn" style="height:28px; font-size:12px;">Sort: Name ↕</button>
+        <button class="toolbar-btn" style="height:28px; font-size:12px;">⬇ Export</button>
+      </div>
+    </div>
+
+    <div id="customer-results">
+      <div class="customer-result" onclick="window.location='customer.html'">
+        <div class="cr-avatar">C</div>
+        <div class="cr-info">
+          <div class="cr-name">Contoso Corporation</div>
+          <div class="cr-meta">
+            <span>🏢 contoso.onmicrosoft.com</span>
+            <span>🆔 TPID: 1234567</span>
+            <span>🌍 United States</span>
+            <span>💼 Enterprise</span>
+          </div>
+        </div>
+        <div class="cr-stats">
+          <div><div class="cr-stat-value">5</div><div class="cr-stat-label">Proposals</div></div>
+          <div><div class="cr-stat-value">8</div><div class="cr-stat-label">Subs</div></div>
+          <div><div class="cr-stat-value">$1.2M</div><div class="cr-stat-label">ARR</div></div>
+        </div>
+        <div class="cr-actions">
+          <button class="btn-secondary" style="height:28px; font-size:12px; padding:0 10px;" onclick="event.stopPropagation(); window.location='new-proposal.html'">＋ Proposal</button>
+        </div>
+      </div>
+
+      <div class="customer-result" onclick="window.location='customer.html'">
+        <div class="cr-avatar" style="background:linear-gradient(135deg, #ca5010, #f7630c);">CL</div>
+        <div class="cr-info">
+          <div class="cr-name">Contoso Ltd (UK)</div>
+          <div class="cr-meta">
+            <span>🏢 contosoltd.onmicrosoft.com</span>
+            <span>🆔 TPID: 2345678</span>
+            <span>🌍 United Kingdom</span>
+            <span>💼 Enterprise</span>
+          </div>
+        </div>
+        <div class="cr-stats">
+          <div><div class="cr-stat-value">3</div><div class="cr-stat-label">Proposals</div></div>
+          <div><div class="cr-stat-value">5</div><div class="cr-stat-label">Subs</div></div>
+          <div><div class="cr-stat-value">£640K</div><div class="cr-stat-label">ARR</div></div>
+        </div>
+        <div class="cr-actions">
+          <button class="btn-secondary" style="height:28px; font-size:12px; padding:0 10px;" onclick="event.stopPropagation(); window.location='new-proposal.html'">＋ Proposal</button>
+        </div>
+      </div>
+
+      <div class="customer-result" onclick="window.location='customer.html'">
+        <div class="cr-avatar" style="background:linear-gradient(135deg, #107c10, #2d9d2d);">CG</div>
+        <div class="cr-info">
+          <div class="cr-name">Contoso GmbH</div>
+          <div class="cr-meta">
+            <span>🏢 contosogmbh.onmicrosoft.com</span>
+            <span>🆔 TPID: 3456789</span>
+            <span>🌍 Germany</span>
+            <span>💼 Enterprise</span>
+          </div>
+        </div>
+        <div class="cr-stats">
+          <div><div class="cr-stat-value">2</div><div class="cr-stat-label">Proposals</div></div>
+          <div><div class="cr-stat-value">4</div><div class="cr-stat-label">Subs</div></div>
+          <div><div class="cr-stat-value">€480K</div><div class="cr-stat-label">ARR</div></div>
+        </div>
+        <div class="cr-actions">
+          <button class="btn-secondary" style="height:28px; font-size:12px; padding:0 10px;" onclick="event.stopPropagation(); window.location='new-proposal.html'">＋ Proposal</button>
+        </div>
+      </div>
+
+      <div class="customer-result" onclick="window.location='customer.html'">
+        <div class="cr-avatar" style="background:linear-gradient(135deg, #5c2d91, #9b59b6);">CP</div>
+        <div class="cr-info">
+          <div class="cr-name">Contoso Pharmaceuticals</div>
+          <div class="cr-meta">
+            <span>🏢 contosopharma.onmicrosoft.com</span>
+            <span>🆔 TPID: 4567890</span>
+            <span>🌍 United States</span>
+            <span>💼 Enterprise</span>
+          </div>
+        </div>
+        <div class="cr-stats">
+          <div><div class="cr-stat-value">1</div><div class="cr-stat-label">Proposals</div></div>
+          <div><div class="cr-stat-value">12</div><div class="cr-stat-label">Subs</div></div>
+          <div><div class="cr-stat-value">$2.1M</div><div class="cr-stat-label">ARR</div></div>
+        </div>
+        <div class="cr-actions">
+          <button class="btn-secondary" style="height:28px; font-size:12px; padding:0 10px;" onclick="event.stopPropagation(); window.location='new-proposal.html'">＋ Proposal</button>
+        </div>
+      </div>
+
+      <div class="customer-result" onclick="window.location='customer.html'">
+        <div class="cr-avatar" style="background:linear-gradient(135deg, #d13438, #ef5350);">CE</div>
+        <div class="cr-info">
+          <div class="cr-name">Contoso Education Foundation</div>
+          <div class="cr-meta">
+            <span>🏢 contosoedu.onmicrosoft.com</span>
+            <span>🆔 TPID: 5678901</span>
+            <span>🌍 United States</span>
+            <span>🎓 Education</span>
+          </div>
+        </div>
+        <div class="cr-stats">
+          <div><div class="cr-stat-value">1</div><div class="cr-stat-label">Proposals</div></div>
+          <div><div class="cr-stat-value">3</div><div class="cr-stat-label">Subs</div></div>
+          <div><div class="cr-stat-value">$85K</div><div class="cr-stat-label">ARR</div></div>
+        </div>
+        <div class="cr-actions">
+          <button class="btn-secondary" style="height:28px; font-size:12px; padding:0 10px;" onclick="event.stopPropagation(); window.location='new-proposal.html'">＋ Proposal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div style="padding:16px 24px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--gray-500); border-top:1px solid var(--gray-200);">
+      <span>Showing 1–5 of 5 results</span>
+      <div class="btn-row">
+        <button class="btn-icon" style="opacity:0.5;" disabled>‹</button>
+        <span style="padding:0 8px;">Page 1 of 1</span>
+        <button class="btn-icon" style="opacity:0.5;" disabled>›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="prototype-watermark">PROTOTYPE — Not Production</div>
+
+<script>
+function filterCustomers(term) {
+  const lower = term.toLowerCase();
+  const results = document.querySelectorAll('.customer-result');
+  let visible = 0;
+  results.forEach(r => {
+    const match = r.textContent.toLowerCase().includes(lower);
+    r.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('results-count').textContent =
+    `Showing ${visible} customer${visible !== 1 ? 's' : ''} matching "${term}"`;
+}
+</script>
+</body>
+</html>

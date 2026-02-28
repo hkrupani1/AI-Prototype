@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal Center – Quote Editor (Agreement)</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { overflow: hidden; }
+  .quote-nav {
+    background: #fff; height: 48px; display: flex; align-items: center;
+    padding: 0 16px; gap: 12px; border-bottom: 1px solid var(--gray-200); flex-shrink: 0;
+  }
+  .quote-back { font-size: 18px; color: var(--gray-500); cursor: pointer; text-decoration: none; }
+  .quote-back:hover { color: var(--blue); }
+  .quote-customer { font-size: 13px; color: var(--blue); cursor: pointer; }
+  .quote-customer:hover { text-decoration: underline; }
+  .quote-sep { color: var(--gray-300); font-size: 13px; }
+  .quote-name { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+  .quote-status { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .quote-expiry { font-size: 11px; color: var(--gray-400); display: flex; align-items: center; gap: 4px; }
+  .quote-id { font-size: 11px; color: var(--gray-400); }
+
+  .editor-wrapper { display: flex; flex-direction: column; height: calc(100vh - 48px); }
+
+  .steps-sidebar {
+    width: 200px; background: #fff; border-right: 1px solid var(--gray-200);
+    padding: 16px 0; flex-shrink: 0; overflow-y: auto;
+  }
+  .steps-title { padding: 0 16px; font-size: 13px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+  .step-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px; font-size: 13px; color: var(--gray-500);
+    cursor: pointer; transition: background .12s;
+  }
+  .step-item:hover { background: var(--gray-50); }
+  .step-item.active { color: var(--blue); font-weight: 600; }
+  .step-item.done { color: var(--green); }
+  .step-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid var(--gray-300); display: flex; align-items: center;
+    justify-content: center; font-size: 10px; flex-shrink: 0;
+  }
+  .step-item.active .step-dot { border-color: var(--blue); background: var(--blue); color: #fff; }
+  .step-item.done .step-dot { border-color: var(--green); background: var(--green); color: #fff; }
+  .step-connector { width: 2px; height: 16px; background: var(--gray-200); margin-left: 25px; }
+  .step-connector.done { background: var(--green); }
+
+  /* Term items */
+  .term-card {
+    background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all .15s;
+  }
+  .term-card:hover { border-color: var(--blue); box-shadow: var(--shadow-sm); }
+  .term-card.selected { border-color: var(--blue); background: var(--blue-selected-bg); border-left: 3px solid var(--blue); }
+  .term-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .term-card-title { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+  .term-card-type { font-size: 11px; color: var(--gray-400); }
+  .term-card-desc { font-size: 12px; color: var(--gray-500); line-height: 1.5; }
+  .term-card-meta { display: flex; gap: 16px; margin-top: 8px; font-size: 11px; color: var(--gray-400); }
+
+  .amendment-label {
+    display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+    border-radius: 2px; font-size: 10px; font-weight: 600; text-transform: uppercase;
+  }
+  .amendment-standard { background: var(--blue-light); color: var(--blue); }
+  .amendment-custom { background: var(--orange-light); color: var(--orange); }
+  .amendment-required { background: var(--red-light); color: var(--red); }
+
+  /* Term detail panel */
+  .term-detail { padding: 20px; }
+  .term-detail h3 { font-size: 15px; font-weight: 600; color: var(--gray-900); margin-bottom: 16px; }
+  .term-clause {
+    padding: 12px 16px; background: var(--gray-50); border: 1px solid var(--gray-200);
+    border-radius: var(--radius); font-size: 13px; line-height: 1.7; color: var(--gray-700);
+    margin-bottom: 12px;
+  }
+  .term-clause .clause-label { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; margin-bottom: 6px; }
+
+  .properties-btn {
+    height: 28px; padding: 0 10px; border: 1px solid var(--gray-300); border-radius: var(--radius);
+    background: #fff; font-family: var(--font); font-size: 12px; color: var(--gray-700);
+    cursor: pointer; display: flex; align-items: center; gap: 4px;
+  }
+  .properties-btn:hover { border-color: var(--blue); color: var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- QUOTE NAV BAR -->
+<div class="quote-nav">
+  <a class="quote-back" href="proposals.html" title="Back to proposals">←</a>
+  <a class="quote-customer" href="customer.html">Contoso Corporation</a>
+  <span class="quote-sep">›</span>
+  <span class="quote-name">Enterprise Azure Migration FY26</span>
+  <div class="quote-status">
+    <span class="quote-id">QC-2026-001847</span>
+    <span class="quote-expiry">⏱ Expires Mar 22, 2026</span>
+    <span class="badge badge-draft">📄 Draft</span>
+    <a class="properties-btn" href="#" onclick="alert('Properties panel')">⚙ Properties</a>
+  </div>
+</div>
+
+<div class="editor-wrapper">
+  <!-- COMMAND BAR -->
+  <div class="command-bar">
+    <button class="cmd-btn primary" onclick="alert('Submit for Approval – prototype interaction')">📤 Submit for Approval</button>
+    <div class="cmd-sep"></div>
+    <button class="cmd-btn" onclick="alert('Save – saved successfully')">💾 Save</button>
+    <button class="cmd-btn" onclick="alert('Undo – prototype interaction')">↩ Undo</button>
+    <div class="cmd-sep"></div>
+    <button class="cmd-btn" onclick="window.location='quote-editor.html'">📦 Products</button>
+    <button class="cmd-btn" onclick="window.location='review-publish.html'">📤 Review & Publish</button>
+    <div class="cmd-sep"></div>
+    <button class="cmd-btn" onclick="alert('Share – copy link generated')">🔗 Share</button>
+    <button class="cmd-btn">⋯ More</button>
+    <div style="flex:1"></div>
+    <span style="font-size:12px;color:var(--gray-400);">Last saved: 2 min ago</span>
+  </div>
+
+  <!-- EDITOR TABS -->
+  <div class="tab-bar" style="padding-left:0;">
+    <div class="tab" onclick="window.location='quote-editor.html'" style="padding-left:16px;">Products</div>
+    <div class="tab active">Agreement <span style="color:var(--red)">*</span></div>
+  </div>
+
+  <!-- EDITOR BODY -->
+  <div style="display:flex; flex:1; overflow:hidden;">
+    <!-- PROPOSAL STEPS -->
+    <div class="steps-sidebar">
+      <div class="steps-title">Proposal Steps</div>
+      <div class="step-item done"><div class="step-dot">✓</div><span>Customer</span></div>
+      <div class="step-connector done"></div>
+      <div class="step-item done"><div class="step-dot">✓</div><span>Products</span></div>
+      <div class="step-connector done"></div>
+      <div class="step-item active"><div class="step-dot">3</div><span>Agreement</span></div>
+      <div class="step-connector"></div>
+      <div class="step-item"><div class="step-dot">4</div><span>Approvals</span></div>
+      <div class="step-connector"></div>
+      <div class="step-item"><div class="step-dot">5</div><span>Publish</span></div>
+    </div>
+
+    <!-- TERM FINDER -->
+    <div class="editor-finder">
+      <div class="finder-header">Term Finder</div>
+      <div class="finder-search">
+        <input type="text" placeholder="Search amendments & terms..." id="term-search" oninput="searchTerms(this.value)">
+      </div>
+      <div id="term-list">
+        <div class="finder-category" onclick="toggleCategory(this)">
+          <span class="cat-icon">📋</span>
+          <span>Standard Amendments</span>
+          <span class="cat-count">6</span>
+        </div>
+        <div class="cat-children">
+          <div class="finder-item" onclick="addTerm('Data Processing Agreement','standard')"><span class="drag-handle">⠿</span>Data Processing Agreement<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Service Level Agreement','standard')"><span class="drag-handle">⠿</span>Service Level Agreement<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Professional Services Terms','standard')"><span class="drag-handle">⠿</span>Professional Services Terms<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Support Terms & Conditions','standard')"><span class="drag-handle">⠿</span>Support Terms & Conditions<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Financial Services Amendment','standard')"><span class="drag-handle">⠿</span>Financial Services Amendment<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('HIPAA BAA','standard')"><span class="drag-handle">⠿</span>HIPAA BAA<span class="add-icon">＋</span></div>
+        </div>
+        <div class="finder-category" onclick="toggleCategory(this)">
+          <span class="cat-icon">✏️</span>
+          <span>Custom Terms</span>
+          <span class="cat-count">3</span>
+        </div>
+        <div class="cat-children" style="display:none;">
+          <div class="finder-item" onclick="addTerm('Custom Pricing Terms','custom')"><span class="drag-handle">⠿</span>Custom Pricing Terms<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Extended Payment Terms','custom')"><span class="drag-handle">⠿</span>Extended Payment Terms<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Volume Discount Schedule','custom')"><span class="drag-handle">⠿</span>Volume Discount Schedule<span class="add-icon">＋</span></div>
+        </div>
+        <div class="finder-category" onclick="toggleCategory(this)">
+          <span class="cat-icon">🔒</span>
+          <span>Compliance & Regulatory</span>
+          <span class="cat-count">4</span>
+        </div>
+        <div class="cat-children" style="display:none;">
+          <div class="finder-item" onclick="addTerm('GDPR Data Protection','required')"><span class="drag-handle">⠿</span>GDPR Data Protection<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('SOC 2 Compliance','required')"><span class="drag-handle">⠿</span>SOC 2 Compliance<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Government Security Rider','required')"><span class="drag-handle">⠿</span>Government Security Rider<span class="add-icon">＋</span></div>
+          <div class="finder-item" onclick="addTerm('Accessibility Standards','required')"><span class="drag-handle">⠿</span>Accessibility Standards<span class="add-icon">＋</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN TERMS LIST -->
+    <div class="editor-main" style="padding:20px;">
+      <div class="info-banner warning">
+        <span class="banner-icon">⚠</span>
+        <span>Agreement terms are required before this proposal can be submitted for approval. Add applicable amendments from the Term Finder.</span>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+        <h3 style="font-size:15px; font-weight:600; color:var(--gray-900);">Agreement Terms <span style="font-size:12px; color:var(--gray-400); font-weight:400;">(4 terms added)</span></h3>
+        <div class="btn-row">
+          <button class="toolbar-btn" onclick="alert('Reorder terms')">↕ Reorder</button>
+          <button class="toolbar-btn" style="color:var(--red);" onclick="alert('Remove selected term')">🗑 Remove</button>
+        </div>
+      </div>
+
+      <!-- Term Cards -->
+      <div id="terms-container">
+        <div class="term-card selected" onclick="selectTerm(this)">
+          <div class="term-card-header">
+            <span class="term-card-title">Microsoft Customer Agreement (MCA)</span>
+            <span class="amendment-label amendment-required">Required</span>
+          </div>
+          <div class="term-card-desc">Base agreement governing the use of Microsoft cloud services including Azure, Microsoft 365, and Dynamics 365. This agreement must be accepted by all customers.</div>
+          <div class="term-card-meta">
+            <span>📄 Version 2024.1</span>
+            <span>📅 Effective: Jan 2024</span>
+            <span>✅ Auto-included</span>
+          </div>
+        </div>
+
+        <div class="term-card" onclick="selectTerm(this)">
+          <div class="term-card-header">
+            <span class="term-card-title">Data Processing Agreement (DPA)</span>
+            <span class="amendment-label amendment-standard">Standard</span>
+          </div>
+          <div class="term-card-desc">Covers data processing obligations, data transfers, sub-processor management, and breach notification requirements under applicable data protection laws.</div>
+          <div class="term-card-meta">
+            <span>📄 Version 8.2</span>
+            <span>📅 Effective: Mar 2024</span>
+            <span>🌍 Global scope</span>
+          </div>
+        </div>
+
+        <div class="term-card" onclick="selectTerm(this)">
+          <div class="term-card-header">
+            <span class="term-card-title">Enterprise Service Level Agreement</span>
+            <span class="amendment-label amendment-standard">Standard</span>
+          </div>
+          <div class="term-card-desc">Defines uptime commitments (99.95%), credit remedies for SLA failures, exclusions, and dispute resolution mechanisms for enterprise workloads.</div>
+          <div class="term-card-meta">
+            <span>📄 Version 5.0</span>
+            <span>📅 Effective: Jun 2024</span>
+            <span>☁ Azure + M365</span>
+          </div>
+        </div>
+
+        <div class="term-card" onclick="selectTerm(this)">
+          <div class="term-card-header">
+            <span class="term-card-title">Custom Pricing Terms</span>
+            <span class="amendment-label amendment-custom">Custom</span>
+          </div>
+          <div class="term-card-desc">Customer-specific pricing adjustments including volume tier discounts, early renewal benefits, and multi-year pricing protection clauses.</div>
+          <div class="term-card-meta">
+            <span>📄 Draft</span>
+            <span>📅 Pending approval</span>
+            <span>⚠ Needs review</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAILS PANE -->
+    <div class="editor-details" id="details-pane">
+      <div class="details-header">Microsoft Customer Agreement</div>
+      <div class="details-section">
+        <div class="details-section-title">Term Details</div>
+        <div class="details-row"><span class="details-label">Type</span><span class="details-value">Base Agreement</span></div>
+        <div class="details-row"><span class="details-label">Version</span><span class="details-value">2024.1</span></div>
+        <div class="details-row"><span class="details-label">Status</span><span class="details-value" style="color:var(--green);">Active</span></div>
+        <div class="details-row"><span class="details-label">Scope</span><span class="details-value">All products</span></div>
+        <div class="details-row"><span class="details-label">Language</span><span class="details-value">English (US)</span></div>
+      </div>
+      <div class="details-section">
+        <div class="details-section-title">Key Clauses</div>
+        <div class="term-clause">
+          <div class="clause-label">Section 1 – License Grant</div>
+          Microsoft grants Customer a limited, non-exclusive, non-transferable right to use the Online Services and Software as set forth in the applicable Order...
+        </div>
+        <div class="term-clause">
+          <div class="clause-label">Section 4 – Data Protection</div>
+          Microsoft will process Customer Data only in accordance with the Data Processing Agreement. Customer retains all rights, title and interest in Customer Data...
+        </div>
+        <div class="term-clause">
+          <div class="clause-label">Section 7 – SLA Credits</div>
+          If Microsoft does not meet the SLA for a service, Customer may be eligible for a credit towards monthly service fees. Credits must be requested within 30 days...
+        </div>
+      </div>
+      <div class="details-section">
+        <div class="details-section-title">Configuration</div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label">Effective Date</label>
+          <input class="form-input" type="date" value="2025-07-01" style="width:100%;">
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label">Expiration Date</label>
+          <input class="form-input" type="date" value="2026-06-30" style="width:100%;">
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label">Notes</label>
+          <textarea class="form-input" style="width:100%; height:60px; resize:vertical; padding:8px 10px;" placeholder="Add internal notes about this term..."></textarea>
+        </div>
+      </div>
+      <div class="details-section">
+        <div class="details-section-title">Actions</div>
+        <div class="btn-row" style="gap:8px;">
+          <button class="btn-secondary" style="font-size:12px; height:28px; padding:0 12px;" onclick="alert('Preview full document')">📄 Preview</button>
+          <button class="btn-secondary" style="font-size:12px; height:28px; padding:0 12px;" onclick="alert('Download PDF')">⬇ Download</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="prototype-watermark">PROTOTYPE — Not Production</div>
+
+<script>
+function toggleCategory(el) {
+  const children = el.nextElementSibling;
+  if (children && children.classList.contains('cat-children')) {
+    children.style.display = children.style.display === 'none' ? '' : 'none';
+  }
+}
+
+function selectTerm(card) {
+  document.querySelectorAll('.term-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const title = card.querySelector('.term-card-title').textContent;
+  document.querySelector('.details-header').textContent = title;
+}
+
+function addTerm(name, type) {
+  const container = document.getElementById('terms-container');
+  const typeClass = type === 'standard' ? 'amendment-standard' : type === 'custom' ? 'amendment-custom' : 'amendment-required';
+  const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
+  const card = document.createElement('div');
+  card.className = 'term-card';
+  card.onclick = function(){ selectTerm(this); };
+  card.innerHTML = `
+    <div class="term-card-header">
+      <span class="term-card-title">${name}</span>
+      <span class="amendment-label ${typeClass}">${typeLabel}</span>
+    </div>
+    <div class="term-card-desc">Amendment added from Term Finder. Configure details in the right panel.</div>
+    <div class="term-card-meta">
+      <span>📄 Latest version</span>
+      <span>📅 Added just now</span>
+    </div>
+  `;
+  container.appendChild(card);
+}
+
+function searchTerms(term) {
+  const lower = term.toLowerCase();
+  document.querySelectorAll('.finder-item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(lower) ? '' : 'none';
+  });
+  document.querySelectorAll('.cat-children').forEach(cat => {
+    const visible = [...cat.querySelectorAll('.finder-item')].some(i => i.style.display !== 'none');
+    cat.style.display = visible ? '' : 'none';
+    if (cat.previousElementSibling) cat.previousElementSibling.style.display = visible ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

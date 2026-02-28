@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal Center – New Proposal</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .wizard-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 200; display: flex; align-items: center; justify-content: center;
+  }
+  .wizard-dialog {
+    width: 580px; max-width: 95vw; background: #fff;
+    border-radius: 4px; box-shadow: var(--shadow-panel);
+    animation: fadeIn .2s ease; max-height: 90vh; display: flex; flex-direction: column;
+  }
+  .wizard-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--gray-200);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .wizard-header h2 { font-size: 20px; font-weight: 600; color: var(--gray-900); }
+  .wizard-body { padding: 24px; flex: 1; overflow-y: auto; }
+  .wizard-footer {
+    padding: 16px 24px; border-top: 1px solid var(--gray-200);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .step-content { display: none; }
+  .step-content.active { display: block; animation: fadeIn .2s ease; }
+
+  .option-group { margin-bottom: 20px; }
+  .option-group label.group-label {
+    font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 8px; display: block;
+  }
+  .option-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .option-card {
+    border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 14px 16px; cursor: pointer; transition: all .15s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .option-card:hover { border-color: var(--blue); background: var(--blue-light); }
+  .option-card.selected { border-color: var(--blue); background: var(--blue-selected-bg); }
+  .option-card .oc-icon { font-size: 20px; width: 28px; text-align: center; }
+  .option-card .oc-title { font-size: 13px; font-weight: 500; color: var(--gray-900); }
+  .option-card.selected .oc-title { color: var(--blue); font-weight: 600; }
+  .option-card .oc-sub { font-size: 11px; color: var(--gray-500); margin-top: 1px; }
+
+  .cloud-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+  .summary-list { list-style: none; }
+  .summary-list li {
+    display: flex; justify-content: space-between; padding: 8px 0;
+    border-bottom: 1px solid var(--gray-100); font-size: 13px;
+  }
+  .summary-list .sl-label { color: var(--gray-500); }
+  .summary-list .sl-value { color: var(--gray-700); font-weight: 500; }
+
+  .review-card {
+    background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 16px;
+  }
+  .review-card h3 { font-size: 14px; font-weight: 600; color: var(--gray-900); margin-bottom: 12px; }
+  .review-edit { color: var(--blue); font-size: 12px; cursor: pointer; float: right; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <span class="nav-grid">⊞</span>
+  <span class="nav-logo">Dynamics 365</span>
+  <span class="nav-sep">|</span>
+  <span class="nav-app">Proposal Center</span>
+  <div class="nav-search"><span>🔍</span><span>Search proposals, customers...</span></div>
+  <div class="nav-right">
+    <span class="nav-icon">＋</span><span class="nav-icon">🔔</span><span class="nav-icon">💬</span><span class="nav-icon">⚙</span><span class="nav-icon">❓</span>
+    <div class="nav-avatar">AJ</div>
+  </div>
+</div>
+
+<div class="app-body">
+  <div class="sidebar-nav">
+    <div class="sidebar-nav-header">Proposal Center</div>
+    <a class="sidebar-nav-item" href="index.html"><span class="nav-item-icon">📊</span><span>Overview</span></a>
+    <a class="sidebar-nav-item active" href="proposals.html"><span class="nav-item-icon">📄</span><span>Proposals</span></a>
+    <a class="sidebar-nav-item" href="customers.html"><span class="nav-item-icon">👥</span><span>Customers</span></a>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">🤝</span><span>Claims</span></a>
+    <div class="sidebar-nav-divider"></div>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">💲</span><span>Pricelist</span></a>
+    <a class="sidebar-nav-item" href="#"><span class="nav-item-icon">📋</span><span>Contract Catalogs</span></a>
+  </div>
+  <div class="main-content" style="background:var(--gray-50);"></div>
+</div>
+
+<!-- WIZARD OVERLAY -->
+<div class="wizard-overlay" id="wizard-overlay">
+  <div class="wizard-dialog">
+    <div class="wizard-header">
+      <h2>Create New Proposal</h2>
+      <button class="panel-close" onclick="window.location='proposals.html'">✕</button>
+    </div>
+
+    <!-- WIZARD STEPS INDICATOR -->
+    <div style="padding:16px 24px 0; display:flex; align-items:center; gap:0;" id="step-indicator">
+      <div class="wizard-step active" data-step="1"><span class="step-number">1</span><span>Channel</span></div>
+      <div class="wizard-connector"></div>
+      <div class="wizard-step" data-step="2"><span class="step-number">2</span><span>Market</span></div>
+      <div class="wizard-connector"></div>
+      <div class="wizard-step" data-step="3"><span class="step-number">3</span><span>Cloud</span></div>
+      <div class="wizard-connector"></div>
+      <div class="wizard-step" data-step="4"><span class="step-number">4</span><span>Details</span></div>
+      <div class="wizard-connector"></div>
+      <div class="wizard-step" data-step="5"><span class="step-number">5</span><span>Review</span></div>
+    </div>
+
+    <div class="wizard-body">
+      <!-- STEP 1: CHANNEL -->
+      <div class="step-content active" id="step-1">
+        <div class="option-group">
+          <label class="group-label">Select the transaction channel <span style="color:var(--red);">*</span></label>
+          <div class="option-cards">
+            <div class="option-card selected" onclick="selectOption(this, 'channel', 'Direct')" data-value="Direct">
+              <span class="oc-icon">🏢</span>
+              <div>
+                <div class="oc-title">Direct</div>
+                <div class="oc-sub">Sell directly to enterprise customer</div>
+              </div>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'channel', 'Indirect CSP')" data-value="Indirect CSP">
+              <span class="oc-icon">🔗</span>
+              <div>
+                <div class="oc-title">Indirect CSP</div>
+                <div class="oc-sub">Sell through Cloud Solution Provider</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: MARKET -->
+      <div class="step-content" id="step-2">
+        <div class="option-group">
+          <label class="group-label">Select the market (country) <span style="color:var(--red);">*</span></label>
+          <div class="form-group" style="margin-bottom:12px;">
+            <input class="form-input" style="width:100%;" type="text" placeholder="Search markets..." id="market-search" oninput="filterMarkets(this.value)">
+          </div>
+          <div id="market-list" style="max-height:280px;overflow-y:auto;">
+            <div class="option-card selected" onclick="selectOption(this,'market','United States')" data-value="United States"><span class="oc-icon">🇺🇸</span><div><div class="oc-title">United States</div><div class="oc-sub">USD</div></div></div>
+            <div class="option-card" onclick="selectOption(this,'market','United Kingdom')" data-value="United Kingdom" style="margin-top:8px;"><span class="oc-icon">🇬🇧</span><div><div class="oc-title">United Kingdom</div><div class="oc-sub">GBP</div></div></div>
+            <div class="option-card" onclick="selectOption(this,'market','Germany')" data-value="Germany" style="margin-top:8px;"><span class="oc-icon">🇩🇪</span><div><div class="oc-title">Germany</div><div class="oc-sub">EUR</div></div></div>
+            <div class="option-card" onclick="selectOption(this,'market','Japan')" data-value="Japan" style="margin-top:8px;"><span class="oc-icon">🇯🇵</span><div><div class="oc-title">Japan</div><div class="oc-sub">JPY</div></div></div>
+            <div class="option-card" onclick="selectOption(this,'market','France')" data-value="France" style="margin-top:8px;"><span class="oc-icon">🇫🇷</span><div><div class="oc-title">France</div><div class="oc-sub">EUR</div></div></div>
+            <div class="option-card" onclick="selectOption(this,'market','India')" data-value="India" style="margin-top:8px;"><span class="oc-icon">🇮🇳</span><div><div class="oc-title">India</div><div class="oc-sub">INR</div></div></div>
+            <div class="option-card" onclick="selectOption(this,'market','Australia')" data-value="Australia" style="margin-top:8px;"><span class="oc-icon">🇦🇺</span><div><div class="oc-title">Australia</div><div class="oc-sub">AUD</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: CLOUD -->
+      <div class="step-content" id="step-3">
+        <div class="option-group">
+          <label class="group-label">Select cloud environment <span style="color:var(--red);">*</span></label>
+          <div class="cloud-options">
+            <div class="option-card selected" onclick="selectOption(this,'cloud','Global')" data-value="Global">
+              <span class="oc-icon">🌐</span>
+              <div><div class="oc-title">Global</div><div class="oc-sub">Commercial cloud</div></div>
+            </div>
+            <div class="option-card" onclick="selectOption(this,'cloud','US Government')" data-value="US Government">
+              <span class="oc-icon">🏛</span>
+              <div><div class="oc-title">US Government</div><div class="oc-sub">Fairfax / GCC</div></div>
+            </div>
+            <div class="option-card" onclick="selectOption(this,'cloud','China')" data-value="China">
+              <span class="oc-icon">🇨🇳</span>
+              <div><div class="oc-title">China</div><div class="oc-sub">21Vianet</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="option-group" style="margin-top:20px;">
+          <label class="group-label">Government engagement type (optional)</label>
+          <div class="option-cards">
+            <div class="option-card" onclick="selectOption(this,'govType','State/Local')" data-value="State/Local">
+              <div><div class="oc-title">State/Local Government</div></div>
+            </div>
+            <div class="option-card" onclick="selectOption(this,'govType','Federal')" data-value="Federal">
+              <div><div class="oc-title">Federal Government</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: DETAILS -->
+      <div class="step-content" id="step-4">
+        <div class="form-group" style="margin-bottom:20px;">
+          <label class="form-label">Proposal name <span class="required">*</span></label>
+          <input class="form-input" style="width:100%;" type="text" id="proposal-name" value="Enterprise Azure Migration FY26" placeholder="Enter a name for this proposal">
+          <span class="form-hint">A descriptive name helps identify this proposal later</span>
+        </div>
+        <div class="form-group" style="margin-bottom:20px;">
+          <label class="form-label">Related CRM opportunity (optional)</label>
+          <input class="form-input" style="width:100%;" type="text" placeholder="Search or enter opportunity ID...">
+          <span class="form-hint">Link to a Dynamics 365 CRM opportunity</span>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Currency</label>
+            <select class="form-select" style="width:100%;">
+              <option selected>USD - US Dollar</option>
+              <option>EUR - Euro</option>
+              <option>GBP - British Pound</option>
+              <option>JPY - Japanese Yen</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Language</label>
+            <select class="form-select" style="width:100%;">
+              <option selected>English</option>
+              <option>French</option>
+              <option>German</option>
+              <option>Japanese</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5: REVIEW -->
+      <div class="step-content" id="step-5">
+        <div class="review-card">
+          <h3>Proposal Settings <span class="review-edit" onclick="goToStep(1)">✏ Edit</span></h3>
+          <ul class="summary-list">
+            <li><span class="sl-label">Channel</span><span class="sl-value" id="rv-channel">Direct</span></li>
+            <li><span class="sl-label">Market</span><span class="sl-value" id="rv-market">United States</span></li>
+            <li><span class="sl-label">Cloud</span><span class="sl-value" id="rv-cloud">Global</span></li>
+            <li><span class="sl-label">Currency</span><span class="sl-value">USD - US Dollar</span></li>
+            <li><span class="sl-label">Language</span><span class="sl-value">English</span></li>
+          </ul>
+        </div>
+        <div class="review-card">
+          <h3>Proposal Details <span class="review-edit" onclick="goToStep(4)">✏ Edit</span></h3>
+          <ul class="summary-list">
+            <li><span class="sl-label">Proposal Name</span><span class="sl-value" id="rv-name">Enterprise Azure Migration FY26</span></li>
+            <li><span class="sl-label">CRM Opportunity</span><span class="sl-value">—</span></li>
+          </ul>
+        </div>
+        <div class="info-banner info" style="margin-top:16px;">
+          <span class="banner-icon">ℹ</span>
+          <span>After creation, you'll be taken to the proposal editor to add products and configure agreement terms.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-footer">
+      <button class="btn-secondary" id="btn-back" onclick="prevStep()" style="display:none;">← Back</button>
+      <div style="flex:1;"></div>
+      <button class="btn-secondary" onclick="window.location='proposals.html'" style="margin-right:8px;">Cancel</button>
+      <button class="btn-primary" id="btn-next" onclick="nextStep()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="prototype-watermark">PROTOTYPE — Not Production</div>
+
+<script>
+let currentStep = 1;
+const totalSteps = 5;
+const selections = { channel: 'Direct', market: 'United States', cloud: 'Global', govType: '' };
+
+function selectOption(card, field, value) {
+  const parent = card.parentElement;
+  parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selections[field] = value;
+}
+
+function filterMarkets(term) {
+  const lower = term.toLowerCase();
+  document.querySelectorAll('#market-list .option-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(lower) ? '' : 'none';
+  });
+}
+
+function goToStep(step) {
+  currentStep = step;
+  updateWizard();
+}
+
+function nextStep() {
+  if (currentStep < totalSteps) {
+    currentStep++;
+    updateWizard();
+  } else {
+    // Create → go to editor
+    window.location = 'quote-editor.html';
+  }
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    updateWizard();
+  }
+}
+
+function updateWizard() {
+  // Update steps visibility
+  document.querySelectorAll('.step-content').forEach((el, i) => {
+    el.classList.toggle('active', i + 1 === currentStep);
+  });
+
+  // Update step indicators
+  document.querySelectorAll('.wizard-step').forEach((el, i) => {
+    const step = i + 1;
+    el.classList.remove('active', 'completed');
+    if (step === currentStep) el.classList.add('active');
+    else if (step < currentStep) el.classList.add('completed');
+  });
+  document.querySelectorAll('.wizard-connector').forEach((el, i) => {
+    el.classList.toggle('done', i + 1 < currentStep);
+  });
+
+  // Update buttons
+  document.getElementById('btn-back').style.display = currentStep > 1 ? '' : 'none';
+  document.getElementById('btn-next').textContent = currentStep === totalSteps ? '✓ Create Proposal' : 'Next →';
+
+  // Update review values
+  if (currentStep === totalSteps) {
+    document.getElementById('rv-channel').textContent = selections.channel;
+    document.getElementById('rv-market').textContent = selections.market;
+    document.getElementById('rv-cloud').textContent = selections.cloud;
+    const nameInput = document.getElementById('proposal-name');
+    document.getElementById('rv-name').textContent = nameInput ? nameInput.value : '';
+  }
+}
+</script>
+</body>
+</html>
